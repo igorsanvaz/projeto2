@@ -1,18 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-const bodyparser = require("body-parser");
-const config = require("./config");
+const express = require('express');
+const bodyParser = require('body-parser');
 const calculateRouter = require('./api/calculate');
 const resultsRouter = require('./api/results');
 const usersRouter = require('./api/users');
+
 const app = express();
-app.use(express.json());
-app.use(cors());
-app.use(bodyparser.json());
-
-var conString = config.urlConnection;
-
 const PORT = process.env.PORT || 5000;
+
+app.use(bodyParser.json());
 
 app.use('/api/calculate', calculateRouter);
 app.use('/api/results', resultsRouter);
