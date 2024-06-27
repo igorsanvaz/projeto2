@@ -3,9 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../models/User');
-const dotenv = require('dotenv');
 
-dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post('/register', async (req, res) => {
   try {
@@ -24,7 +23,7 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findByUsername(username);
     if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
       res.json({ token });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });

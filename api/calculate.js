@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Result = require('../models/Result');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 router.post('/', async (req, res) => {
   try {
@@ -17,6 +14,8 @@ router.post('/', async (req, res) => {
       area = 0.5 * dimensions.base * dimensions.height;
     } else if (shape === 'square') {
       area = Math.pow(dimensions.side, 2);
+    } else {
+      throw new Error('Invalid shape type');
     }
 
     const result = await Result.create(userId, shape, dimensions, area);
