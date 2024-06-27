@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Result = require('../models/Result');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 router.get('/:userId', async (req, res) => {
   try {
