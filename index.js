@@ -18,6 +18,7 @@ app.use('/api/calculate', calculateRouter);
 app.use('/api/results', resultsRouter);
 app.use('/api/users', usersRouter);
 
+// Rota raiz para verificar se a API está rodando
 app.get('/', (req, res) => {
   res.send('API is running');
 });
