@@ -9,5 +9,5 @@ const {
 
 module.exports = {
     port: PORT,
-    urlConnection: pgConnection
+    urlConnection: DATABASE_URL
 } 

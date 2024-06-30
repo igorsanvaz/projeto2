@@ -1,17 +1,22 @@
-const { Pool } = require('pg');
+const { Client } = require('pg');
+const config = require("./config");
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+var conString = config.urlConnection;
+const client = new Client(conString)
+
+client.connect((err) => {
+    if (err) {
+        return console.error('Não foi possível conectar ao banco.', err);
+    }
+    client.query('SELECT NOW()', (err, result) => {
+        if (err) {
+            return console.error('Erro ao executar a query.', err);
+        }
+        console.log(result.rows[0]);
+    });
 });
 
-pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
+app.get("/", (req, res) => {
+    console.log("Response ok.");
+    res.send("Ok - Servidor disponível.");
 });
-
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-};
