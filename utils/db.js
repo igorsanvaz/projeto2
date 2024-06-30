@@ -1,6 +1,13 @@
+const express = require("express");
 const { Client } = require('pg');
+const cors = require("cors");
+const bodyparser = require("body-parser");
 const config = require("./config");
 
+const app = express();
+app.use(express.json());
+app.use(cors());
+app.use(bodyparser.json());
 var conString = config.urlConnection;
 const client = new Client(conString)
 
