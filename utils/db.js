@@ -1,7 +1,11 @@
 const { Pool } = require('pg');
 
-var conString = process.env.DATABASE_URL;
-const pool = new Pool(conString);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 pool.on('error', (err, client) => {
   console.error('Unexpected error on idle client', err);
