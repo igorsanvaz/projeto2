@@ -18,6 +18,10 @@ app.use('/api/calculate', calculateRouter);
 app.use('/api/results', resultsRouter);
 app.use('/api/users', usersRouter);
 
+app.get('/', (req, res) => {
+  res.send('API is running');
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
