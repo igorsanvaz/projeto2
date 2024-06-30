@@ -4,7 +4,7 @@ module.exports = {
   create: async (username, password) => {
     try {
       const result = await db.query(
-        'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
+        'INSERT INTO users (username, password, created_at) VALUES ($1, $2, NOW()) RETURNING *',
         [username, password]
       );
       return result.rows[0];
@@ -15,13 +15,10 @@ module.exports = {
   },
   findByUsername: async (username) => {
     try {
-      const result = await db.query(
-        'SELECT * FROM users WHERE username = $1',
-        [username]
-      );
+      const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
       return result.rows[0];
     } catch (error) {
-      console.error('Error finding user by username:', error);
+      console.error('Error fetching user:', error);
       throw error;
     }
   },

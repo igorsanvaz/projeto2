@@ -1,17 +1,25 @@
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
+const db = require('../utils/db');
 
 module.exports = {
-  query: (text, params) => pool.query(text, params),
+  create: async (username, password) => {
+    try {
+      const result = await db.query(
+        'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
+        [username, password]
+      );
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  },
+  findByUsername: async (username) => {
+    try {
+      const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      throw error;
+    }
+  },
 };
