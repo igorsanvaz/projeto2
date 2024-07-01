@@ -93,7 +93,7 @@ app.post('/api/calculate', authenticateToken, async (req, res) => {
         return res.status(400).json({ error: 'Invalid shape' });
     }
 
-    const result = await query('INSERT INTO results (user_id, shape, dimensions, area) VALUES ($1, $2, $3, $4) RETURNING *', [req.user.id, shape, dimensions, area]);
+    const result = await query('INSERT INTO results (user_id, shape, dimensions, area, created_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING *', [req.user.id, shape, dimensions, area]);
     res.json(result.rows[0]);
   } catch (error) {
     console.error('Error calculating area:', error);
