@@ -12,24 +12,23 @@ app.use(bodyParser.json());
 const conString = config.urlConnection;
 const client = new Client(conString);
 
-client.connect(err => {
+client.connect((err) => {
   if (err) {
-    console.error('Não foi possível conectar ao banco.', err);
-  } else {
-    client.query('SELECT NOW()', (err, result) => {
-      if (err) {
-        console.error('Erro ao executar a query.', err);
-      } else {
-        console.log('Conectado ao banco de dados:', result.rows[0]);
-      }
-    });
+    return console.error('Não foi possível conectar ao banco.', err);
   }
+  client.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      return console.error('Erro ao executar a query.', err);
+    }
+    console.log(result.rows[0]);
+  });
 });
 
 app.get('/', (req, res) => {
   console.log('Response ok.');
   res.send('Ok - Servidor disponível.');
 });
+
 
 // Rotas
 app.post('/register', async (req, res) => {
@@ -88,22 +87,23 @@ app.get('/posts', async (req, res) => {
 });
 app.get("/users", (req, res) => {
   try {
-      client.query("SELECT * FROM users", function
-          (err, result) {
-          if (err) {
-              return console.error("Erro ao executar a qry de SELECT", err);
-          }
-          res.send(result.rows);
-          console.log("Rota: get usuarios");
-      });
+    client.query("SELECT * FROM users", function
+      (err, result) {
+      if (err) {
+        return console.error("Erro ao executar a qry de SELECT", err);
+      }
+      res.send(result.rows);
+      console.log("Rota: get usuarios");
+    });
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
 });
 // Iniciar o servidor
 const PORT = config.port || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(client);
 });
 
 module.exports = app;
