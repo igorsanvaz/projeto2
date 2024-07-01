@@ -12,18 +12,19 @@ app.use(bodyParser.json());
 const conString = config.urlConnection;
 const client = new Client(conString);
 
-client.connect((err) => {
+client.connect(err => {
   if (err) {
-    return console.error('Não foi possível conectar ao banco.', err);
+    console.error('Não foi possível conectar ao banco.', err);
+  } else {
+    client.query('SELECT NOW()', (err, result) => {
+      if (err) {
+        console.error('Erro ao executar a query.', err);
+      } else {
+        console.log('Conectado ao banco de dados:', result.rows[0]);
+      }
+    });
   }
-  client.query('SELECT NOW()', (err, result) => {
-    if (err) {
-      return console.error('Erro ao executar a query.', err);
-    }
-    console.log(result.rows[0]);
-  });
 });
-
 
 app.get('/', (req, res) => {
   console.log('Response ok.');
@@ -41,6 +42,7 @@ app.post('/register', async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -56,6 +58,7 @@ app.post('/login', async (req, res) => {
       res.status(401).json({ error: 'Invalid credentials' });
     }
   } catch (error) {
+    console.error('Erro ao fazer login:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -69,6 +72,7 @@ app.post('/posts', async (req, res) => {
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
+    console.error('Erro ao criar post:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -78,12 +82,13 @@ app.get('/posts', async (req, res) => {
     const result = await client.query('SELECT * FROM posts');
     res.status(200).json(result.rows);
   } catch (error) {
+    console.error('Erro ao buscar posts:', error);
     res.status(400).json({ error: error.message });
   }
 });
 
 // Iniciar o servidor
-const PORT = process.env.PORT || 3000;
+const PORT = config.port || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
