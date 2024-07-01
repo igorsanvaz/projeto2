@@ -9,17 +9,25 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Configuração do banco de dados
-const client = new Client({
-  connectionString: config.urlConnection,
+const conString = config.urlConnection;
+const client = new Client(conString);
+
+client.connect((err) => {
+  if (err) {
+    return console.error('Não foi possível conectar ao banco.', err);
+  }
+  client.query('SELECT NOW()', (err, result) => {
+    if (err) {
+      return console.error('Erro ao executar a query.', err);
+    }
+    console.log(result.rows[0]);
+  });
 });
 
-client.connect(err => {
-  if (err) {
-    console.error('Não foi possível conectar ao banco.', err);
-  } else {
-    console.log('Conectado ao banco de dados PostgreSQL.');
-  }
+
+app.get('/', (req, res) => {
+  console.log('Response ok.');
+  res.send('Ok - Servidor disponível.');
 });
 
 // Rotas
