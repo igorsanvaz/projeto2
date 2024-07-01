@@ -86,7 +86,20 @@ app.get('/posts', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
+app.get("/users", (req, res) => {
+  try {
+      client.query("SELECT * FROM users", function
+          (err, result) {
+          if (err) {
+              return console.error("Erro ao executar a qry de SELECT", err);
+          }
+          res.send(result.rows);
+          console.log("Rota: get usuarios");
+      });
+  } catch (error) {
+      console.log(error);
+  }
+});
 // Iniciar o servidor
 const PORT = config.port || 3000;
 app.listen(PORT, () => {
